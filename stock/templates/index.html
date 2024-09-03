@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 20px;
+        }
+        .chart-container {
+            margin-top: 20px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .bank-info {
+            margin-top: 20px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user.login }}</h1>
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
+        </div>
+        <div class="bank-info">
+            <h2>Bank Account Details</h2>
+            <!-- Replace with actual bank details -->
+            <p>Account Balance: $10,000</p>
+        </div>
+        <div class="buttons">
+            <button onclick="buyStock()">Buy Stock</button>
+            <button onclick="sellStock()">Sell Stock</button>
+        </div>
+    </div>
+
+    <script>
+        // Fetch stock data and render chart
+        function fetchStockData() {
+            fetch('/api/time_series_daily')
+                .then(response => response.json())
+                .then(data => {
+                    let labels = Object.keys(data['Time Series (Daily)']);
+                    let values = labels.map(date => data['Time Series (Daily)'][date]['4. close']);
+
+                    const ctx = document.getElementById('stockChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Stock Price',
+                                data: values,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: { beginAtZero: true },
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                });
+        }
+
+        function buyStock() {
+            alert("Buy Stock option clicked!");
+            // Implement buy stock functionality
+        }
+
+        function sellStock() {
+            alert("Sell Stock option clicked!");
+            // Implement sell stock functionality
+        }
+
+        fetchStockData();
+    </script>
+</body>
+</html>
